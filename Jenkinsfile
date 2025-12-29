@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE = "dockerhub_ldn/expimage"
+        IMAGE = "youcef26/expimage"
         TAG = "${BUILD_NUMBER}"
     }
 
@@ -16,20 +16,35 @@ pipeline {
                 sh "docker build -t $IMAGE:$TAG ."
             }
         }
-
-        stage('Push Image too dokcer hub haha ') {
-            steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-creds',
-                    usernameVariable: 'USER',
-                    passwordVariable: 'PASS'
-                )]) {
-                    sh """
-                    echo $PASS | docker login -u $USER --password-stdin
-                    docker push $IMAGE:$TAG
-                    """
-                }
-            }
+     
+stage('Push Image to Docker Hub') {
+    steps {
+        withCredentials([usernamePassword(
+            credentialsId: 'dockerhub-creds',
+            usernameVariable: 'USER',
+            passwordVariable: 'PASS'
+        )]) {
+            sh '''
+            echo "$PASS" | docker login -u "$USER" --password-stdin
+            docker push $IMAGE:$TAG
+            '''
         }
+    }
+}
+
+        // stage('Push Image too dokcer hub haha ') {
+        //     steps {
+        //         withCredentials([usernamePassword(
+        //             credentialsId: 'dockerhub-creds',
+        //             usernameVariable: 'USER',
+        //             passwordVariable: 'PASS'
+        //         )]) {
+        //             sh """
+        //             echo $PASS | docker login -u $USER --password-stdin
+        //             docker push $IMAGE:$TAG
+        //             """
+        //         }
+        //     }
+        // }
     }
 }
