@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:20'   // Node.js + npm installed
-            args '-v /var/run/docker.sock:/var/run/docker.sock'  // Allow Docker commands
-        }
-    }
+    agent any
     environment {
         IMAGE_NAME = "youcef26/expimage"                  // Docker Hub image
         IMAGE_TAG = "${env.BUILD_NUMBER}"             
