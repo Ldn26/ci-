@@ -44,31 +44,31 @@ pipeline {
 
 
 
-        stage('Update K8s Manifest in Git') {
-            steps {
-                // Clone the K8s manifests repo
-                sh "git clone -b $K8S_BRANCH $K8S_REPO k8s-repo"
-                dir('k8s-repo') {
-                    // Update the deployment.yaml image tag
-                    sh "sed -i.bak 's|image: $IMAGE_NAME:.*|image: $IMAGE_NAME:$IMAGE_TAG|' base/deployment.yaml"
-                    sh 'git config user.name "Ldn26"'
-                    sh 'git config user.email "youcefldn26@gmail.com"'
-                    sh 'git add base/deployment.yaml'
-                    sh "git commit -m 'Update image to $IMAGE_TAG'"
-                    sh "git push origin $K8S_BRANCH"
-                }
-            }
-        }
+        // stage('Update K8s Manifest in Git') {
+        //     steps {
+        //         // Clone the K8s manifests repo
+        //         sh "git clone -b $K8S_BRANCH $K8S_REPO k8s-repo"
+        //         dir('k8s-repo') {
+        //             // Update the deployment.yaml image tag
+        //             sh "sed -i.bak 's|image: $IMAGE_NAME:.*|image: $IMAGE_NAME:$IMAGE_TAG|' base/deployment.yaml"
+        //             sh 'git config user.name "Ldn26"'
+        //             sh 'git config user.email "youcefldn26@gmail.com"'
+        //             sh 'git add base/deployment.yaml'
+        //             sh "git commit -m 'Update image to $IMAGE_TAG'"
+        //             sh "git push origin $K8S_BRANCH"
+        //         }
+        //     }
+        // }
     }
 
-    post {
-        success {
-            echo "Pipeline completed successfully! Argo CD will deploy the new image."
-        }
-        failure {
-            echo "Pipeline failed. Check logs for details."
-        }
-    }
+    // post {
+    //     success {
+    //         echo "Pipeline completed successfully! Argo CD will deploy the new image."
+    //     }
+    //     failure {
+    //         echo "Pipeline failed. Check logs for details."
+    //     }
+    // }
 }
 
 
