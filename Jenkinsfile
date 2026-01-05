@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'node:20'   // Node.js + npm installed
+            args '-v /var/run/docker.sock:/var/run/docker.sock'  // Allow Docker commands
+        }
+    }
     environment {
         IMAGE_NAME = "youcef26/expimage"                  // Docker Hub image
         IMAGE_TAG = "${env.BUILD_NUMBER}"             
@@ -9,10 +14,11 @@ pipeline {
 
     stages {
         stage('Checkout App Code') {
-                steps {
-               checkout scm  
-    }
+            steps {
+                checkout scm  
+            }
         }
+
         stage('Install & Test') {
             steps {
                 sh 'npm install'
@@ -42,8 +48,6 @@ pipeline {
             }
         }
 
-
-
         // stage('Update K8s Manifest in Git') {
         //     steps {
         //         // Clone the K8s manifests repo
@@ -70,48 +74,3 @@ pipeline {
     //     }
     // }
 }
-
-
-
-
-
-
-
-// pipeline {
-//     agent any
-
-//     environment {
-//         IMAGE = "youcef26/expimage"
-//         TAG = "${BUILD_NUMBER}"
-//     }
-
-//     stages {
-//         stage('Checkout') {
-//             steps {
-//                 checkout scm
-//             }
-//         }
-
-//         stage('Build Image') {
-//             steps {
-//                 sh "docker build -t $IMAGE:$TAG ."
-//             }
-//         }
-
-//         stage('Push Image to Docker Hub') {
-//             steps {
-//                 withCredentials([usernamePassword(
-//                     credentialsId: 'dockerhub-creds',
-//                     usernameVariable: 'USER',
-//                     passwordVariable: 'PASS'
-//                 )]) {
-//                     sh '''
-//                         echo "$PASS" | docker login -u "$USER" --password-stdin
-//                         docker push $IMAGE:$TAG
-//                         docker logout
-//                     '''
-//                 }
-//             }
-//         }
-//     }
-// }
