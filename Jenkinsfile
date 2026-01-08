@@ -50,7 +50,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
+                checkout scm  // using source coe managements
             }
         }
 
@@ -80,14 +80,11 @@ pipeline {
             steps {
                 sh '''
                   rm -rf manifest-repo
-                  git clone -b $MANIFEST_BRANCH $MANIFEST_REPO manifest-repo
-                  cd manifest-repo
-
+                  git clone -b $MANIFEST_BRANCH $MANIFEST_REPO manifest-repo 
+                  cd manifest-repo/base
                   sed -i "s|image: .*|image: $IMAGE:$TAG|" deployment.yaml
-
                   git config user.name "Ldn26"
                   git config user.email "y_laidani@estin.dz"
-
                   git add deployment.yaml
                   git commit -m "Update image to $IMAGE:$TAG"
                   git push origin $MANIFEST_BRANCH
